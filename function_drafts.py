@@ -8,7 +8,6 @@ Created on Tue Sep  5 08:09:05 2023
 import get_protein_sequence_from_fasta as gpsff
 import re
 import os
-import ra
 import string_permutations
 
 

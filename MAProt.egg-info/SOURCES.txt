@@ -1,0 +1,16 @@
+__init__.py
+center_peptides.py
+function_drafts.py
+get_protein_info.py
+get_protein_sequence_from_fasta.py
+main.py
+setup.py
+string_permutations.py
+MAProt.egg-info/PKG-INFO
+MAProt.egg-info/SOURCES.txt
+MAProt.egg-info/dependency_links.txt
+MAProt.egg-info/requires.txt
+MAProt.egg-info/top_level.txt
+__pycache__/center_peptides.cpython-39.pyc
+__pycache__/get_protein_sequence_from_fasta.cpython-39.pyc
+protein_databases/human_proteome_UP000005640_9606.fasta.gz

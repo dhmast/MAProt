@@ -224,8 +224,6 @@ def get_randomized_strings(s, by=None, create_plot=False):
 
 def find_pattern_in_prot(protein, s):
     '''
-
-
     Parameters
     ----------
     protein : str
