@@ -11,7 +11,7 @@ setup(
         'Bio',
         'biopython',
         'biopython',
-        'dash_bio=',
+        'dash_bio',
         'matplotlib',
         'pyteomics',
         'Requests',
