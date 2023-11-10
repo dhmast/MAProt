@@ -16,5 +16,7 @@ setup(
         'pyteomics',
         'Requests',
         'setuptools',
+        'sklearn',
+
     ],       # List of dependencies
 )

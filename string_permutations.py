@@ -22,9 +22,40 @@ import re
 import random
 import math
 from collections import Counter
-from itertools import permutations
+from itertools import permutations, product
 import matplotlib.pyplot as plt
 
+def sub_leu_ile_permutations(s: str):
+    '''
+    Generate all permutations of peptide sequences by swapping 'I' with 'L' and 'L' with 'I'.
+
+    Parameters:
+        s : str
+            The input peptide sequence containing 'I' and 'L'.
+
+    Returns:
+        generator
+            Yields strings containing all possible permutations of 'I' and 'L' in the peptide.
+
+    Example:
+        original_string = 'KTKIELDF'
+
+        ## Generate all combinations
+        >>> combinations = set(sub_leu_ile_permutations(original_string))
+
+        >>> for combo in combinations:
+        ...     print(combo)
+        
+        ## Output
+        KTKIELDF
+        KTKLELDF
+        KTKIELDF
+        KTKLELDF
+    '''
+    replacements = {'I': ['I', 'L'], 'L': ['I', 'L']}
+    possible_combinations = [replacements.get(c, [c]) for c in s]
+    for combo in product(*possible_combinations):
+        yield ''.join(combo)
 
 
 def num_perms_wo_repeats(regular_expression: str, other: bool = False) -> int:
