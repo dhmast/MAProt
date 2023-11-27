@@ -99,9 +99,6 @@ def peptide_substitution_permutations(s:str, replacements:dict):
 
 def num_perms_wo_repeats2(regular_expression: str, r, other: bool = False) -> int:
 
-
- 
-
     if not isinstance(regular_expression, str):
             raise TypeError("Input must be a string.")
         
@@ -427,7 +424,7 @@ def get_randomized_strings(s, by=None, create_plot=False):
 
 
 
-def get_randomized_strings_length_n(s, by=None, create_plot=False):
+def get_randomized_strings_length_n(s, r=5, by=None, create_plot=False, stop_after=None):
     
     '''
     Parameters
@@ -460,11 +457,19 @@ def get_randomized_strings_length_n(s, by=None, create_plot=False):
     checks = check_regex_input(s)
     s, output_mapping = convert_regex_input(s)
     print(s)
-    total_perms = num_perms_wo_repeats(s)
-    if total_perms > 400_000_000:
-        print('WAY TOO MANY PERMUTATIONS! try a different string!')
-        raise ValueError(f'{total_perms}...This number of permutations is too high!')
-        
+    total_perms = num_perms_wo_repeats2(s, r)
+    if stop_after is None:
+
+        if total_perms > 400_000_000_000:
+            print('WAY TOO MANY PERMUTATIONS! try a different string!')
+            raise ValueError(f'{total_perms}...This number of permutations is too high!')
+    else:
+        if isinstance(stop_after, int):
+            print(f'You stopped after finding {stop_after} permutations')
+            total_perms = stop_after
+        else:
+            pass
+            
     print('expected number of permutations without repeats: ', total_perms)
     hits = set()
     num_hits = []
@@ -483,7 +488,7 @@ def get_randomized_strings_length_n(s, by=None, create_plot=False):
     while running:
         i+=1
         hit = function(s)
-        hits.add(hit)
+        hits.add(hit[:r])
        
         num_hits.append(len(hits)/total_perms)
         num_iters.append(i)
