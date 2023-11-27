@@ -58,6 +58,67 @@ def sub_leu_ile_permutations(s: str):
         yield ''.join(combo)
 
 
+def peptide_substitution_permutations(s:str, replacements:dict):
+    '''
+    substitutes characters in a string based on a dict
+    
+    Parameters:
+        s : str
+            The input peptide sequence.
+        
+        replacements : dict
+            The mapping for the replacements. 
+            Ex 1.  {'I': ['I', 'L'], 'L': ['I', 'L']}
+            Ex 2. {'A':['X'], 'F':['U']} #will replace all 'A' with 'X' and all 'F' with 'U'
+        
+    Returns:
+        generator
+            Yields strings containing all possible permutations of the mapping in the peptide.
+
+    Example:
+        >>> original_string = 'KTKIELDF'
+        >>> replacement_dict = {'I': ['I', 'L'], 'L': ['I', 'L']}
+        
+        ## Generate all combinations
+        >>> combinations = set(sub_leu_ile_permutations(original_string))
+
+        >>> for combo in combinations:
+        ...     print(combo)
+        
+        ## Output
+        KTKIELDF
+        KTKLELDF
+        KTKIELDF
+        KTKLELDF
+
+    '''
+    
+    possible_combinations = [replacements.get(c, [c]) for c in s]
+    for combo in product(*possible_combinations):
+        yield ''.join(combo)
+
+def num_perms_wo_repeats2(regular_expression: str, r, other: bool = False) -> int:
+
+
+ 
+
+    if not isinstance(regular_expression, str):
+            raise TypeError("Input must be a string.")
+        
+    counts = Counter(regular_expression)
+    #factorial_counts = [math.factorial(count) for count in counts.values()]
+    #unique_combos = math.factorial(len(regular_expression)) // math.prod(factorial_counts)
+    unique_combos = math.factorial(len(regular_expression)) // math.factorial(len(regular_expression)- r)
+    if other:
+        chars = list(counts.keys())
+        counts = list(counts.values())
+        return unique_combos, chars, counts
+    else:
+        return unique_combos
+
+    
+
+
 def num_perms_wo_repeats(regular_expression: str, other: bool = False) -> int:
     """
     Computes the number of unique permutations of a string with repeated characters.
@@ -309,6 +370,98 @@ def get_randomized_strings(s, by=None, create_plot=False):
     print(s)
     total_perms = num_perms_wo_repeats(s)
     if total_perms > 400_000:
+        print('WAY TOO MANY PERMUTATIONS! try a different string!')
+        raise ValueError(f'{total_perms}...This number of permutations is too high!')
+        
+    print('expected number of permutations without repeats: ', total_perms)
+    hits = set()
+    num_hits = []
+    num_iters = []
+    h_to_i = []
+    running = True
+    i=0
+    
+    if by =='number':
+        function = randomize_string_by_number
+    
+    else:
+        function = randomize_string
+    
+    # randomize string by the
+    while running:
+        i+=1
+        hit = function(s)
+        hits.add(hit)
+       
+        num_hits.append(len(hits)/total_perms)
+        num_iters.append(i)
+        h_to_i.append(len(hits)/i)
+        
+        if len(hits) == total_perms:
+            print(f'total number of permutations reached! at {i} iterations')
+            running = False
+            break
+        elif len(hits)/i <= 0.05:
+            print('computation time exceeded maximum')
+            running = False
+            break
+            
+    hits = list(hits)
+    if create_plot:
+        plt.scatter(num_iters, num_hits, label='number of hits/total permutations')
+        plt.scatter(num_iters, h_to_i, label='number of hits / number iterations')
+        plt.legend()
+        plt.xlabel('# iterations')
+        
+    print('calculated_number of combos: ', len(hits))
+    print('hits-to-iterations ratio : ', f'{len(hits)/i:0.2f}')
+    if output_mapping:
+        hits = [reverse_replace_regex_chars(_, output_mapping) for _ in hits]
+        
+    if checks.get('has_start'):
+        hits = ['^'+hit for hit in hits]
+    if checks.get('has_end'):
+        hits = [hit+'$' for hit in hits]
+         
+    return hits
+
+
+
+def get_randomized_strings_length_n(s, by=None, create_plot=False):
+    
+    '''
+    Parameters
+    ----------
+    s : string
+        regex pattern which will be randmized.
+    by : str, optional
+        which function will be used to randomized the string. The default is None.
+        if by='number' than the randomize_string_by_number() function will be used
+    create_plot : TYPE, optional
+        DESCRIPTION. The default is False.
+
+    Raises
+    ------
+    ValueError
+        value error raised if the number of permutations is too large. 
+
+    Returns
+    -------
+    hits : list
+        a list of all possible permutations without repeated orders of the input string.
+    
+    Example
+    -------
+        In: string = 'ABC'
+        In: x = get_randomized_strings(string)
+        In: print(x)
+        Out: ['BAC', 'CBA', 'ACB', 'BCA', 'CAB', 'ABC'] 
+    '''
+    checks = check_regex_input(s)
+    s, output_mapping = convert_regex_input(s)
+    print(s)
+    total_perms = num_perms_wo_repeats(s)
+    if total_perms > 400_000_000:
         print('WAY TOO MANY PERMUTATIONS! try a different string!')
         raise ValueError(f'{total_perms}...This number of permutations is too high!')
         
